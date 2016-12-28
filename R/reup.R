@@ -25,7 +25,7 @@ set_bioc_mirror <- function(url = "https://bioconductor.org"){
 }
 
 get_bioc_mirror <- function(){
-  get("bioc_mirror", envir = reup_options)
+  reup:::reup_options$bioc_mirror
 }
 
 #' old library location
@@ -44,7 +44,7 @@ set_old_library <- function(lib_loc = NULL){
 }
 
 get_old_library <- function(){
-  get("old_library", envir = reup_options)
+  reup:::reup_options$old_library
 }
 
 #' new library location
