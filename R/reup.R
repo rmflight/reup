@@ -73,10 +73,8 @@ set_new_library <- function(parent_directory = NULL, library_directory = NULL){
   if (is.null(library_directory)) {
     library_directory <- paste0("R_", r_version$major, ".", r_version$minor)
 
-    if (is.null(get_bioc_mirror())) {
-      library_directory <- paste0(library_directory, "_library")
-    } else {
-      library_directory <- paste0(library_directory, "_bioc", tools:::.BioC_version_associated_with_R_version(), "_library")
+    if (!is.null(get_bioc_mirror())) {
+      library_directory <- paste0(library_directory, "_bioc", tools:::.BioC_version_associated_with_R_version())
     }
   }
   full_library <- file.path(parent_directory, library_directory)
@@ -86,6 +84,8 @@ set_new_library <- function(parent_directory = NULL, library_directory = NULL){
   }
 
   message(paste0("New Library Will Be Stored In: ", full_library))
+  message(paste0("You should add this line to your .Renviron file: \n\n",
+                 "R_LIBS=", full_library))
 
   assign("new_library", full_library, envir = reup_options)
 
