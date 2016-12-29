@@ -108,9 +108,8 @@ get_new_library <- function(){
 #' @return NULL
 set_local_packages <- function(local_pkg_dir = getwd()){
   if (!is.null(get_new_library())) {
-    is_installed <- installed.packages(lib.loc = get_new_library())
 
-    if (rownames(is_installed) %in% "devtools") {
+    if (suppressWarnings(require("devtools", lib.loc = get_new_library(), quietly = TRUE))) {
       assign("local_packages", local_pkg_dir, envir = reup_options)
     } else {
       stop("devtools must be already installed to install local packages!")
