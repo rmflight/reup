@@ -93,6 +93,34 @@ set_new_library <- function(parent_directory = NULL, library_directory = NULL){
 
 }
 
+get_new_library <- function(){
+  reup:::reup_options$new_library
+}
+
+#' set local packages
+#'
+#' Set a directory to search recursively for the existence of local packages
+#' that should be installed using \code{devtools}.
+#'
+#' @param local_pkg_dir the directory to search for local packages
+#'
+#' @export
+#' @return NULL
+set_local_packages <- function(local_pkg_dir = getwd()){
+  if (!is.null(get_new_library())) {
+    is_installed <- installed.packages(lib.loc = get_new_library())
+
+    if (rownames(is_installed) %in% "devtools") {
+      assign("local_packages", local_pkg_dir, envir = reup_options)
+    } else {
+      stop("devtools must be already installed to install local packages!")
+    }
+
+  } else {
+    stop("A new library must already be set!")
+  }
+}
+
 #' reup
 #'
 #' actually tries to do the upgrade of packages using `install.packages`.
