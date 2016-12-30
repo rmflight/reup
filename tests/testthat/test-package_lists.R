@@ -35,8 +35,13 @@ test_that("comparing package lists works", {
   }
 })
 
-test_that("counting number of dependencies", {
-  data("pkg_matrix")
+data("pkg_matrix")
 
+test_that("counting number of dependencies", {
   expect_equal_to_reference(n_package_deps(pkg_matrix), "pkg_frame.rds")
+})
+
+test_that("getting install types", {
+  pkg_frame <- n_package_deps(pkg_matrix)
+  expect_equal_to_reference(package_type(pkg_frame), "pkg_types.rds")
 })
