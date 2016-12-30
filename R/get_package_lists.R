@@ -67,3 +67,52 @@ n_package_deps <- function(pkg_matrix){
 #' @source Robert M Flight
 #'
 "pkg_matrix"
+
+match_type <- function(pkg_desc){
+  if (!is.null(pkg_desc$Repository)) {
+    if (pkg_desc$Repository == "CRAN") {
+      out_type <- data.frame(type = "cran", remote = "NA", branch = "NA", stringsAsFactors = FALSE)
+    }
+  }
+
+  if (!is.null(pkg_desc$biocViews)) {
+    out_type <- data.frame(type = "bioconductor", remote = "NA", branch = "NA", stringsAsFactors = FALSE)
+  }
+
+  if (!is.null(pkg_desc$RemoteType)) {
+    if (pkg_desc$RemoteType == "local") {
+      out_type <- data.frame(type = "local", remote = pkg_desc$RemoteUrl, branch = pkg_desc$RemoteBranch, stringsAsFactors = FALSE)
+    } else if (pkg_desc$RemoteType == "github") {
+      out_type <- data.frame(type = "github",
+                             remote = paste0(pkg_desc$RemoteUsername, "/",
+                                             pkg_desc$RemoteRepo),
+                             branch = pkg_desc$RemoteRef,
+                             stringsAsFactors = FALSE)
+    }
+  }
+
+  if ((is.null(pkg_desc$Repository)) && (is.null(pkg_desc$biocViews)) && (is.null(pkg_desc$RemoteType))) {
+    out_type <- data.frame(type = "NA", remote = "NA", branch = "NA", stringsAsFactors = FALSE)
+  }
+  out_type
+}
+
+#' package type
+#'
+#' Determine what type of package it is and where it needs to be installed from.
+#' The types expected include: Cran, Bioconductor, local, and versioned repo (i.e.
+#' github, bitbucket, gitlab).
+#'
+#' @param pkg_frame a data.frame of package information
+#'
+#' @export
+#' @return data.frame
+package_type <- function(pkg_frame){
+  pkg_types <- lapply(seq(1, nrow(pkg_frame)), function(in_row){
+    tmp_desc <- utils::packageDescription(pkg_frame[in_row, "Package"],
+                                          pkg_frame[in_row, "LibPath"])
+    reup:::match_type(tmp_desc)
+  })
+  pkg_types <- do.call(rbind, pkg_types)
+  cbind(pkg_frame, pkg_types)
+}
