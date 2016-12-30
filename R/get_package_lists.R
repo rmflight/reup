@@ -38,3 +38,23 @@ compare_old_new_library <- function(){
   old_pkgs <- old_pkgs[setdiff(rownames(old_pkgs), rownames(new_pkgs)), ]
   old_pkgs
 }
+
+#' number of dependencies
+#'
+#' get the number of dependencies for all of the packages
+#'
+#' @param pkg_matrix the matrix of package information
+#'
+#' @export
+#' @return data.frame
+n_package_deps <- function(pkg_matrix){
+  pkg_deps <- paste0(pkg_matrix[, "Depends"], ", ",
+                     pkg_matrix[, "Imports"], ", ",
+                     pkg_matrix[, "Suggests"], "")
+  pkg_frame <- as.data.frame(pkg_matrix)
+  split_deps <- strsplit(pkg_deps, ",")
+  n_deps <- vapply(split_deps, length, numeric(1))
+
+  pkg_frame$n_deps <- n_deps
+  pkg_frame
+}
