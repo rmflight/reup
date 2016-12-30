@@ -34,3 +34,9 @@ test_that("comparing package lists works", {
     expect_equal(c("pkg2", "pkg3"), rownames(new_pkgs))
   }
 })
+
+test_that("counting number of dependencies", {
+  data("pkg_matrix")
+
+  expect_equal_to_reference(n_package_deps(pkg_matrix), "pkg_frame.rds")
+})
