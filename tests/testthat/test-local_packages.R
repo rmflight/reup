@@ -24,9 +24,9 @@ test_that("local packages works correctly", {
   # still error because devtools isnt installed
   expect_error(set_local_packages())
 
-  if(require("devtools")) {
-    devtools::install("dummyDevtools", reload = FALSE, local = TRUE, quiet = TRUE,
-                      lib = reup:::reup_options$new_library)
+  if (require("devtools")) {
+    .libPaths(c(reup:::reup_options$new_library, .libPaths()))
+    devtools::install("dummyDevtools", reload = FALSE, local = TRUE, quiet = TRUE)
     #set_local_packages()
     expect_silent(set_local_packages())
   }
