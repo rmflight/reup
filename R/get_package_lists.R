@@ -51,7 +51,7 @@ n_package_deps <- function(pkg_matrix){
   pkg_deps <- paste0(pkg_matrix[, "Depends"], ", ",
                      pkg_matrix[, "Imports"], ", ",
                      pkg_matrix[, "Suggests"], "")
-  pkg_frame <- as.data.frame(pkg_matrix)
+  pkg_frame <- as.data.frame(pkg_matrix, stringsAsFactors = FALSE)
   split_deps <- strsplit(pkg_deps, ",")
   n_deps <- vapply(split_deps, length, numeric(1))
 
