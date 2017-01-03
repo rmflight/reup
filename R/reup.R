@@ -105,6 +105,7 @@ reup <- function(...){
   }
 
   if (!is.null(split_type[["local"]])) {
+    setup_devtools()
     split_type[["local"]] <- install_packages(split_type[["local"]], local_installer)
   }
 
