@@ -6,7 +6,7 @@
 #' @return NULL
 #' @export
 setup_devtools <- function(){
-  if (.libPaths()[1] != reup_options$new_library){
+  if (.libPaths()[1] != reup_options$new_library) {
     .libPaths(c(reup_options$new_library, .libPaths()))
   }
 }
@@ -14,13 +14,13 @@ setup_devtools <- function(){
 bioc_installer <- function(remote_info){
   pkg_name <- remote_info$Package
   BiocInstaller::biocLite(pkg_name, suppressUpdates = TRUE,
-                          lib = reup:::reup_options$new_library,
-                          repos = get_bioc_mirror())
+                          lib = reup_options$new_library,
+                          repos = c(get_bioc_mirror(), get_cran_mirror()))
 }
 
 cran_installer <- function(remote_info){
   pkg_name <- remote_info$Package
-  install.packages(pkg_name, lib = reup:::reup_options$new_library,
+  install.packages(pkg_name, lib = reup_options$new_library,
                    repos = get_cran_mirror())
 }
 
