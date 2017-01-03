@@ -84,11 +84,11 @@ reup <- function(...){
   # }
 
   # try cran and bioconductor twice in case of funny chicken egg dependencies
-  if (!is.null(split_type[["cran"]] && !is.null(get_cran_mirror()))) {
+  if (!is.null(split_type[["cran"]]) && !is.null(get_cran_mirror())) {
     split_type[["cran"]] <- install_packages(split_type[["cran"]], cran_installer)
   }
 
-  if (!is.null(split_type[["bioconductor"]] && is.null(get_bioc_mirror()))) {
+  if (!is.null(split_type[["bioconductor"]]) && !is.null(get_bioc_mirror())) {
     split_type[["bioconductor"]] <- install_packages(split_type[["bioconductor"]], bioc_installer)
   }
 
@@ -101,6 +101,7 @@ reup <- function(...){
   }
 
   if (!is.null(split_type[["github"]])) {
+    setup_devtools()
     split_type[["github"]] <- install_packages(split_type[["github"]], github_installer)
   }
 
