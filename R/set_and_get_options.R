@@ -41,7 +41,7 @@ set_old_library <- function(lib_loc = NULL){
     dir_info <- get_lib_dir_info()
     # if latest dir creation time is less than 24 hours, assume that one is
     # actually the new library, and set the old one to the next oldest
-    if (difftime(Sys.time(), dir_info[1, "ctime"], units = "hours") < 24) {
+    if ((difftime(Sys.time(), dir_info[1, "ctime"], units = "hours") < 24) && (nrow(dir_info) > 1)) {
       lib_loc <- rownames(dir_info)[2]
     } else {
       lib_loc <- rownames(dir_info)[1]
