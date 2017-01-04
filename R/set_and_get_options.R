@@ -50,10 +50,12 @@ set_old_library <- function(lib_loc = NULL){
   assign("old_library", lib_loc, envir = reup_options)
 }
 
-get_lib_dir_info <- function(){
-  top_dir <- dirname(Sys.getenv("R_LIBS"))
-  if (nchar(top_dir) == 0) {
-    top_dir <- dirname(.libPaths[1])
+get_lib_dir_info <- function(top_dir = NULL){
+  if (is.null(top_dir)) {
+    top_dir <- dirname(Sys.getenv("R_LIBS"))
+    if (nchar(top_dir) == 0) {
+      top_dir <- dirname(.libPaths[1])
+    }
   }
 
   all_dirs <- list.dirs(top_dir, recursive = FALSE)
@@ -105,7 +107,7 @@ set_new_library <- function(lib_loc = NULL){
   }
 
   if (is.null(lib_loc)) {
-    dir_info <- get_lib_dir_info()
+    dir_info <- get_lib_dir_info(dirname(old_library))
     if ((difftime(Sys.time(), dir_info[1, "mod_time"], units = "hours") < 24) && (nrow(dir_info) > 1)) {
       lib_loc <- dir_info[1, "dir"]
     }
