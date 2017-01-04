@@ -11,6 +11,12 @@ setup_devtools <- function(){
   }
 }
 
+setup_bioc <- function(){
+  if (!require(BiocInstaller)) {
+    source("https://bioconductor.org/biocLite.R")
+  }
+}
+
 bioc_installer <- function(remote_info){
   pkg_name <- remote_info$Package
   BiocInstaller::biocLite(pkg_name, suppressUpdates = TRUE,
@@ -89,6 +95,7 @@ reup <- function(...){
   }
 
   if (!is.null(split_type[["bioconductor"]]) && !is.null(get_bioc_mirror())) {
+    setup_bioc()
     split_type[["bioconductor"]] <- install_packages(split_type[["bioconductor"]], bioc_installer)
   }
 
