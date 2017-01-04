@@ -38,9 +38,28 @@ get_bioc_mirror <- function(){
 #' @return NULL
 set_old_library <- function(lib_loc = NULL){
   if (is.null(lib_loc)) {
-    lib_loc <- Sys.getenv("R_LIBS")
+    dir_info <- get_lib_dir_info()
+    # if latest dir creation time is less than 24 hours, assume that one is
+    # actually the new library, and set the old one to the next oldest
+    if (difftime(Sys.time(), dir_info[1, "ctime"], units = "hours") < 24) {
+      lib_loc <- rownames(dir_info)[2]
+    } else {
+      lib_loc <- rownames(dir_info)[1]
+    }
   }
   assign("old_library", lib_loc, envir = reup_options)
+}
+
+get_lib_dir_info <- function(){
+  top_dir <- dirname(Sys.getenv("R_LIBS"))
+  if (nchar(top_dir) == 0) {
+    top_dir <- dirname(.libPaths[1])
+  }
+
+  all_dirs <- list.dirs(top_dir, recursive = FALSE)
+  dir_info <- file.info(all_dirs)
+  dir_info <- dir_info[order(dir_info$ctime, decreasing = TRUE), ]
+  dir_info
 }
 
 get_old_library <- function(){
@@ -52,12 +71,11 @@ get_old_library <- function(){
 #' Creates a new library location based on the version of R, and if the
 #' Bioconductor mirror is set, then the Bioconductor version as well.
 #'
-#' @param parent_directory the parent directory
-#' @param library_directory the actual library directory, default is NULL
+#' @param lib_loc the full directory name
 #'
 #' @export
 #' @return NULL
-set_new_library <- function(parent_directory = NULL, library_directory = NULL){
+set_new_library <- function(lib_loc = NULL){
   r_version <- R.version
   #usr_home <- Sys.getenv("HOME")
 
@@ -68,28 +86,30 @@ set_new_library <- function(parent_directory = NULL, library_directory = NULL){
     old_library <- get_old_library()
   }
 
-  if (is.null(parent_directory)) {
-    parent_directory <- dirname(old_library)
-  }
-
-  if (is.null(library_directory)) {
-    library_directory <- paste0("R", r_version$major, ".", r_version$minor)
-
-    if (!is.null(get_bioc_mirror())) {
-      library_directory <- paste0(library_directory, "_Bioc", tools:::.BioC_version_associated_with_R_version())
+  if (is.null(lib_loc)) {
+    dir_info <- get_lib_dir_info()
+    if (difftime(Sys.time(), dir_info[1, "ctime"], units = "hours") < 24) {
+      lib_loc <- rownames(dir_info)[1]
     }
   }
-  full_library <- file.path(parent_directory, library_directory)
 
-  if (!dir.exists(full_library)) {
-    dir.create(full_library)
+  if (is.null(lib_loc)) {
+    dir_name <- paste0("R", r_version$major, ".", r_version$minor)
+
+    if (!is.null(get_bioc_mirror())) {
+      dir_name <- paste0(dir_name, "_Bioc", tools:::.BioC_version_associated_with_R_version())
+    }
+  }
+  lib_loc <- file.path(dirname(get_old_library()), dir_name)
+
+  if (!dir.exists(lib_loc)) {
+    dir.create(lib_loc)
+    message(paste0("New Library Will Be Stored In: ", lib_loc))
+    message(paste0("You should add this line to your .Renviron file: \n",
+                   "  R_LIBS=", lib_loc))
   }
 
-  message(paste0("New Library Will Be Stored In: ", full_library))
-  message(paste0("You should add this line to your .Renviron file: \n",
-                 "  R_LIBS=", full_library))
-
-  assign("new_library", full_library, envir = reup_options)
+  assign("new_library", lib_loc, envir = reup_options)
 
 }
 
