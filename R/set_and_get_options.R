@@ -41,10 +41,10 @@ set_old_library <- function(lib_loc = NULL){
     dir_info <- get_lib_dir_info()
     # if latest dir creation time is less than 24 hours, assume that one is
     # actually the new library, and set the old one to the next oldest
-    if ((difftime(Sys.time(), dir_info[1, "ctime"], units = "hours") < 24) && (nrow(dir_info) > 1)) {
-      lib_loc <- rownames(dir_info)[2]
+    if ((difftime(Sys.time(), dir_info[1, "mod_time"], units = "hours") < 24) && (nrow(dir_info) > 1)) {
+      lib_loc <- dir_info[2, "dir"]
     } else {
-      lib_loc <- rownames(dir_info)[1]
+      lib_loc <- dir_info[1, "dir"]
     }
   }
   assign("old_library", lib_loc, envir = reup_options)
@@ -57,8 +57,25 @@ get_lib_dir_info <- function(){
   }
 
   all_dirs <- list.dirs(top_dir, recursive = FALSE)
-  dir_info <- file.info(all_dirs)
-  dir_info <- dir_info[order(dir_info$ctime, decreasing = TRUE), ]
+
+  dir_mod_info <- lapply(all_dirs, function(in_dir){
+    dirs_in_dir <- list.dirs(in_dir, recursive = FALSE)
+
+    if (length(dirs_in_dir) == 0) {
+      out_info <- data.frame(dir = in_dir, has_dirs = "no", mod_time = NA,
+                             stringsAsFactors = FALSE)
+    } else {
+      dir_info <- file.info(dirs_in_dir)
+      out_info <- data.frame(dir = in_dir, has_dirs = "yes",
+                             mod_time = max(dir_info$mtime),
+                             stringsAsFactors = FALSE)
+    }
+    out_info
+  })
+  dir_info <- do.call(rbind, dir_mod_info)
+  dir_info <- dir_info[!is.na(dir_info$mod_time), ]
+  dir_info$mod_time <- as.POSIXct(dir_info$mod_time, origin = "1970-01-01")
+  dir_info <- dir_info[order(dir_info$mod_time, decreasing = TRUE), ]
   dir_info
 }
 
@@ -78,6 +95,7 @@ get_old_library <- function(){
 set_new_library <- function(lib_loc = NULL){
   r_version <- R.version
   #usr_home <- Sys.getenv("HOME")
+  write_message <- FALSE
 
   if (is.null(get_old_library())) {
     set_old_library()
@@ -88,8 +106,8 @@ set_new_library <- function(lib_loc = NULL){
 
   if (is.null(lib_loc)) {
     dir_info <- get_lib_dir_info()
-    if (difftime(Sys.time(), dir_info[1, "ctime"], units = "hours") < 24) {
-      lib_loc <- rownames(dir_info)[1]
+    if ((difftime(Sys.time(), dir_info[1, "mod_time"], units = "hours") < 24) && (nrow(dir_info) > 1)) {
+      lib_loc <- dir_info[1, "dir"]
     }
   }
 
@@ -99,11 +117,26 @@ set_new_library <- function(lib_loc = NULL){
     if (!is.null(get_bioc_mirror())) {
       dir_name <- paste0(dir_name, "_Bioc", tools:::.BioC_version_associated_with_R_version())
     }
+    lib_loc <- file.path(dirname(get_old_library()), dir_name)
   }
-  lib_loc <- file.path(dirname(get_old_library()), dir_name)
+
 
   if (!dir.exists(lib_loc)) {
     dir.create(lib_loc)
+    write_message <- TRUE
+
+  } else {
+    if (dir.exists(lib_loc) && (nrow(dir_info) == 1)) {
+      has_numeral_end <- regexpr("_[[:digit:]]$", lib_loc)
+      if (has_numeral_end != -1) {
+        curr_numeral <- as.numeric(substring(lib_loc, nchar(lib_loc)))
+        lib_loc <- paste0(substring(lib_loc, 1, nchar(lib_loc)-1), curr_numeral + 1)
+        write_message <- TRUE
+      }
+    }
+  }
+
+  if (write_message) {
     message(paste0("New Library Will Be Stored In: ", lib_loc))
     message(paste0("You should add this line to your .Renviron file: \n",
                    "  R_LIBS=", lib_loc))
