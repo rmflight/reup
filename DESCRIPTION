@@ -1,6 +1,6 @@
 Package: reup
 Title: Provides Utilities for Upgrading Packages in an Old R Library
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: person(given = c("Robert", "M"), family = "Flight", email = "rflight79@gmail.com", role = c("aut", "cre"))
 Description: Provides a series of functions that sanely try to install the same
     set of packages that exist in a previous R library directory
