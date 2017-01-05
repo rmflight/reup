@@ -6,13 +6,24 @@
 #' @return NULL
 #' @export
 setup_devtools <- function(){
+
+  set_libpaths <- function(){
+    if (.libPaths()[1] != get_new_library()) {
+      .libPaths(c(get_new_library(), .libPaths()))
+    }
+  }
+
   if (!is.null(get_new_library)) {
     if (suppressWarnings(require("devtools", lib.loc = get_new_library(), quietly = TRUE))) {
-      if (.libPaths()[1] != get_new_library()) {
-        .libPaths(c(get_new_library(), .libPaths()))
-      }
+      set_libpaths()
     } else {
-      stop("devtools must be installed to install local packages!")
+      install.packages("devtools", lib = get_new_library(), repos = get_cran_mirror())
+      if (suppressWarnings(require("devtools", lib.loc = get_new_library(), quietly = TRUE))) {
+        stop("devtools could not be installed, please install it to install local packages.")
+      } else {
+        set_libpaths()
+      }
+
     }
   } else {
     stop("A new library must be set first!")
@@ -23,6 +34,10 @@ setup_devtools <- function(){
 setup_bioc <- function(){
   if (suppressWarnings(require("BiocInstaller", lib.loc = get_new_library(), quietly = TRUE))) {
     source("https://bioconductor.org/biocLite.R")
+
+    if (suppressWarnings(require("BiocInstaller", lib.loc = get_new_library(), quietly = TRUE))) {
+      stop("BiocInstaller not available, should be installed for installing Bioconductor packages!")
+    }
   }
 }
 
