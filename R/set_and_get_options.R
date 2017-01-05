@@ -151,26 +151,3 @@ set_new_library <- function(lib_loc = NULL){
 get_new_library <- function(){
   reup:::reup_options$new_library
 }
-
-#' set local packages
-#'
-#' Set a directory to search recursively for the existence of local packages
-#' that should be installed using \code{devtools}.
-#'
-#' @param local_pkg_dir the directory to search for local packages
-#'
-#' @export
-#' @return NULL
-set_local_packages <- function(local_pkg_dir = getwd()){
-  if (!is.null(get_new_library())) {
-
-    if (suppressWarnings(require("devtools", lib.loc = get_new_library(), quietly = TRUE))) {
-      assign("local_packages", local_pkg_dir, envir = reup_options)
-    } else {
-      stop("devtools must be already installed to install local packages!")
-    }
-
-  } else {
-    stop("A new library must already be set!")
-  }
-}
