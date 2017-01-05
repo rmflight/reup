@@ -40,8 +40,7 @@ setup_bioc <- function(){
 bioc_installer <- function(remote_info){
   pkg_name <- remote_info$Package
   BiocInstaller::biocLite(pkg_name, suppressUpdates = TRUE,
-                          lib = reup_options$new_library,
-                          repos = c(get_bioc_mirror(), get_cran_mirror()))
+                          lib = reup_options$new_library)
 }
 
 cran_installer <- function(remote_info){
