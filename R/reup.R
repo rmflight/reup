@@ -1,10 +1,9 @@
-#' setup devtools
-#'
-#' Makes modifications suitable for doing installations using \code{devtools} for
-#' local and / or github based packages.
-#'
-#' @return NULL
-#' @export
+check_new_library <- function(){
+  if (is.null(get_new_library())) {
+    stop("A new library must be set first!")
+  }
+}
+
 setup_devtools <- function(){
 
   set_libpaths <- function(){
@@ -13,25 +12,22 @@ setup_devtools <- function(){
     }
   }
 
-  if (!is.null(get_new_library)) {
-    if (suppressWarnings(require("devtools", lib.loc = get_new_library(), quietly = TRUE))) {
-      set_libpaths()
-    } else {
-      install.packages("devtools", lib = get_new_library(), repos = get_cran_mirror())
-      if (suppressWarnings(require("devtools", lib.loc = get_new_library(), quietly = TRUE))) {
-        stop("devtools could not be installed, please install it to install local packages.")
-      } else {
-        set_libpaths()
-      }
+  check_new_library()
 
-    }
+  if (suppressWarnings(require("devtools", lib.loc = get_new_library(), quietly = TRUE))) {
+    set_libpaths()
   } else {
-    stop("A new library must be set first!")
+    install.packages("devtools", lib = get_new_library(), repos = get_cran_mirror())
+    if (suppressWarnings(require("devtools", lib.loc = get_new_library(), quietly = TRUE))) {
+      stop("devtools could not be installed, please install it to install local packages.")
+    } else {
+      set_libpaths()
+    }
   }
-
 }
 
 setup_bioc <- function(){
+  check_new_library()
   if (suppressWarnings(require("BiocInstaller", lib.loc = get_new_library(), quietly = TRUE))) {
     source("https://bioconductor.org/biocLite.R")
 
