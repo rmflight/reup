@@ -118,12 +118,17 @@ reup <- function(...){
     split_type[["bioconductor"]] <- install_packages(split_type[["bioconductor"]], bioc_installer)
   }
 
-  if ((nrow(split_type[["cran"]]) != 0) && !is.null(get_cran_mirror())) {
-    split_type[["cran"]] <- install_packages(split_type[["cran"]], cran_installer)
+  if (!is.null(split_type[["cran"]]) && !is.null(get_cran_mirror())) {
+    if (nrow(split_type[["cran"]]) != 0) {
+      split_type[["cran"]] <- install_packages(split_type[["cran"]], cran_installer)
+    }
+
   }
 
-  if ((nrow(split_type[["bioconductor"]])) && !is.null(get_bioc_mirror())) {
-    split_type[["bioconductor"]] <- install_packages(split_type[["bioconductor"]], bioc_installer)
+  if (!is.null(split_type[["bioconductor"]]) && !is.null(get_bioc_mirror())) {
+    if (nrow(split_type[["bioconductor"]]) != 0) {
+      split_type[["bioconductor"]] <- install_packages(split_type[["bioconductor"]], bioc_installer)
+    }
   }
 
   if (!is.null(split_type[["github"]])) {
