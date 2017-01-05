@@ -6,7 +6,12 @@ test_that("comparing package lists works", {
 
   tmp_libpath <- file.path(tempdir(), "reup_test", "old_libs")
 
-  if (!dir.exists(tmp_libpath)) dir.create(tmp_libpath, recursive = TRUE)
+  if (dir.exists(tmp_libpath)) {
+    unlink(tmp_libpath, recursive = TRUE, force = TRUE)
+  }
+  dir.create(file.path(tmp_libpath, "pkg1"), recursive = TRUE)
+
+
   .libPaths(c(tmp_libpath, .libPaths()))
   Sys.setenv(R_LIBS = tmp_libpath)
 
@@ -14,6 +19,8 @@ test_that("comparing package lists works", {
   on.exit({
     .libPaths(old_libpaths)
     Sys.setenv(R_LIBS = old_libs)
+    unlink(tmp_libpath, force = TRUE, recursive = TRUE)
+    #unlink(tmp_libpath2, force = TRUE, recursive = TRUE)
   }, add = TRUE)
 
   reset_reup_options()
@@ -26,7 +33,7 @@ test_that("comparing package lists works", {
     devtools::install("pkg2", reload = FALSE, local = TRUE, quiet = TRUE)
     devtools::install("pkg3", reload = FALSE, local = TRUE, quiet = TRUE)
 
-    .libPaths(c(reup:::reup_options$new_library))
+    .libPaths(c(reup:::get_new_library()))
     devtools::install("pkg1", reload = FALSE, local = TRUE, quiet = TRUE)
     #set_local_packages()
     new_pkgs <- compare_old_new_library()
