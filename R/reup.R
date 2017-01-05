@@ -18,7 +18,7 @@ setup_devtools <- function(){
     set_libpaths()
   } else {
     install.packages("devtools", lib = get_new_library(), repos = get_cran_mirror())
-    if (suppressWarnings(require("devtools", lib.loc = get_new_library(), quietly = TRUE))) {
+    if (!suppressWarnings(require("devtools", lib.loc = get_new_library(), quietly = TRUE))) {
       stop("devtools could not be installed, please install it to install local packages.")
     } else {
       set_libpaths()
@@ -28,10 +28,10 @@ setup_devtools <- function(){
 
 setup_bioc <- function(){
   check_new_library()
-  if (suppressWarnings(require("BiocInstaller", lib.loc = get_new_library(), quietly = TRUE))) {
+  if (!suppressWarnings(require("BiocInstaller", lib.loc = get_new_library(), quietly = TRUE))) {
     source("https://bioconductor.org/biocLite.R")
 
-    if (suppressWarnings(require("BiocInstaller", lib.loc = get_new_library(), quietly = TRUE))) {
+    if (!suppressWarnings(require("BiocInstaller", lib.loc = get_new_library(), quietly = TRUE))) {
       stop("BiocInstaller not available, should be installed for installing Bioconductor packages!")
     }
   }
@@ -138,5 +138,8 @@ reup <- function(...){
   }
 
   out_pkgs <- do.call(rbind, split_type)
+  if (nrow(out_pkgs) == 0) {
+    message("All packages successfully installed!")
+  }
   out_pkgs
 }
