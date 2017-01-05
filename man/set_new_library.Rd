@@ -4,12 +4,10 @@
 \alias{set_new_library}
 \title{new library location}
 \usage{
-set_new_library(parent_directory = NULL, library_directory = NULL)
+set_new_library(lib_loc = NULL)
 }
 \arguments{
-\item{parent_directory}{the parent directory}
-
-\item{library_directory}{the actual library directory, default is NULL}
+\item{lib_loc}{the full directory name}
 }
 \description{
 Creates a new library location based on the version of R, and if the
