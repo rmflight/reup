@@ -6,13 +6,22 @@
 #' @return NULL
 #' @export
 setup_devtools <- function(){
-  if (.libPaths()[1] != reup_options$new_library) {
-    .libPaths(c(reup_options$new_library, .libPaths()))
+  if (!is.null(get_new_library)) {
+    if (suppressWarnings(require("devtools", lib.loc = get_new_library(), quietly = TRUE))) {
+      if (.libPaths()[1] != get_new_library()) {
+        .libPaths(c(get_new_library(), .libPaths()))
+      }
+    } else {
+      stop("devtools must be installed to install local packages!")
+    }
+  } else {
+    stop("A new library must be set first!")
   }
+
 }
 
 setup_bioc <- function(){
-  if (!require(BiocInstaller)) {
+  if (suppressWarnings(require("BiocInstaller", lib.loc = get_new_library(), quietly = TRUE))) {
     source("https://bioconductor.org/biocLite.R")
   }
 }
