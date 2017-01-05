@@ -103,3 +103,8 @@ reup()
 ## Code Of Conduct
 
 Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+
+## Issues, Bug Reports
+
+If you use this package, and have any issues, please [create an issue](https://github.com/rmflight/reup/issues).
+If you are reporting a bug, please include the version of `R` that you used.
