@@ -83,7 +83,9 @@ match_type <- function(pkg_desc){
 
   if (!is.null(pkg_desc$RemoteType)) {
     if (pkg_desc$RemoteType == "local") {
-      out_type <- data.frame(type = "local", remote = pkg_desc$RemoteUrl, branch = pkg_desc$RemoteBranch, stringsAsFactors = FALSE)
+      out_type <- data.frame(type = "local", remote = pkg_desc$RemoteUrl,
+                             branch = pkg_desc$RemoteBranch,
+                             host = "NA", stringsAsFactors = FALSE)
     } else if (pkg_desc$RemoteType == "github") {
       out_type <- data.frame(type = "github",
                              remote = paste0(pkg_desc$RemoteUsername, "/",
