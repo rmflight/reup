@@ -95,7 +95,8 @@ match_type <- function(pkg_desc){
   }
 
   if ((is.null(pkg_desc$Repository)) && (is.null(pkg_desc$biocViews)) && (is.null(pkg_desc$RemoteType))) {
-    out_type <- data.frame(type = "NA", remote = "NA", branch = "NA", stringsAsFactors = FALSE)
+    out_type <- data.frame(type = "NA", remote = "NA", branch = "NA",
+                           host = "NA", stringsAsFactors = FALSE)
   }
   out_type
 }
