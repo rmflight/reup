@@ -87,6 +87,7 @@ match_type <- function(pkg_desc){
                              remote = paste0(pkg_desc$RemoteUsername, "/",
                                              pkg_desc$RemoteRepo),
                              branch = pkg_desc$RemoteRef,
+                             host = pkg_desc$RemoteHost,
                              stringsAsFactors = FALSE)
     }
   }

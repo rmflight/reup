@@ -56,7 +56,8 @@ local_installer <- function(remote_info){
 
 github_installer <- function(remote_info){
   pkg_name <- paste0(remote_info$remote, "@", remote_info$branch)
-  devtools::install_github(pkg_name, reload = FALSE, local = TRUE, quiet = FALSE)
+  devtools::install_github(pkg_name, reload = FALSE, local = TRUE, quiet = FALSE,
+                           host = remote_info$host)
 }
 
 #' install packages
