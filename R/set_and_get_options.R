@@ -106,8 +106,9 @@ set_new_library <- function(lib_loc = NULL){
     old_library <- get_old_library()
   }
 
+  dir_info <- get_lib_dir_info(dirname(old_library))
   if (is.null(lib_loc)) {
-    dir_info <- get_lib_dir_info(dirname(old_library))
+    
     if ((difftime(Sys.time(), dir_info[1, "mod_time"], units = "hours") < 24) && (nrow(dir_info) > 1)) {
       lib_loc <- dir_info[1, "dir"]
     }
