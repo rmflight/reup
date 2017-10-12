@@ -69,6 +69,7 @@ n_package_deps <- function(pkg_matrix){
 "pkg_matrix"
 
 match_type <- function(pkg_desc){
+  print(pkg_desc$Package)
   if (!is.null(pkg_desc$Repository)) {
     if (pkg_desc$Repository == "CRAN") {
       out_type <- data.frame(type = "cran", remote = "NA", branch = "NA", stringsAsFactors = FALSE)
@@ -81,7 +82,10 @@ match_type <- function(pkg_desc){
 
   if (!is.null(pkg_desc$RemoteType)) {
     if (pkg_desc$RemoteType == "local") {
-      out_type <- data.frame(type = "local", remote = pkg_desc$RemoteUrl, branch = pkg_desc$RemoteBranch, stringsAsFactors = FALSE)
+      out_type <- data.frame(type = "local", remote = pkg_desc$RemoteUrl, branch = "NA", stringsAsFactors = FALSE)
+      if (!is.null(pkg_desc$remoteBranch)) {
+        out_type$branch = pkg_desc$RemoteBranch
+      }
     } else if (pkg_desc$RemoteType == "github") {
       out_type <- data.frame(type = "github",
                              remote = paste0(pkg_desc$RemoteUsername, "/",
