@@ -69,7 +69,7 @@ n_package_deps <- function(pkg_matrix){
 "pkg_matrix"
 
 match_type <- function(pkg_desc){
-  print(pkg_desc$Package)
+  #print(pkg_desc$Package)
   if (!is.null(pkg_desc$Repository)) {
     if (pkg_desc$Repository == "CRAN") {
       out_type <- data.frame(type = "cran", remote = "NA", branch = "NA", stringsAsFactors = FALSE)
