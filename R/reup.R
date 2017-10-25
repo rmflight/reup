@@ -77,7 +77,7 @@ install_packages <- function(pkg_frame, install_fun){
   # we haven't installed our dependencies yet, which means other things might get
   # installed. We don't want to have to install those again either.
   pkg_frame$try_install <- TRUE
-  pkg_frame <- pkg_frame[order(pkg_frame$n_deps, decreasing = TRUE), ]
+  pkg_frame <- pkg_frame[order(pkg_frame$n_deps, decreasing = FALSE), ]
   while (any(pkg_frame$try_install)) {
     ipkg <- min(which(pkg_frame$try_install))
     pkg_frame[ipkg, "try_install"] <- FALSE # don't try it again
@@ -108,9 +108,9 @@ reup <- function(...){
 
   split_type <- split(pkg_frame, pkg_frame$type)
 
-  split_type <- lapply(split_type, function(x){
-    x[order(x$n_deps, decreasing = FALSE), ]
-  })
+  # split_type <- lapply(split_type, function(x){
+  #   x[order(x$n_deps, decreasing = FALSE), ]
+  # })
 
   # save the NA pkgs so we can tell the user about them
   # if (!is.null(split_type$`NA`)) {
