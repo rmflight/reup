@@ -73,8 +73,18 @@ github_installer <- function(remote_info){
 install_packages <- function(pkg_frame, install_fun){
 
   # try to install each of the packages listed once
-  for (ipkg in seq_len(nrow(pkg_frame))) {
+  # done in a while loop, because even though we might have a low number of dependencies,
+  # we haven't installed our dependencies yet, which means other things might get
+  # installed. We don't want to have to install those again either.
+  pkg_frame$try_install <- TRUE
+  pkg_frame <- pkg_frame[order(pkg_frame$n_deps, decreasing = TRUE), ]
+  while (any(pkg_frame$try_install)) {
+    ipkg <- min(which(pkg_frame$try_install))
+    pkg_frame[ipkg, "try_install"] <- FALSE # don't try it again
     install_fun(pkg_frame[ipkg, ])
+
+    all_installed <- rownames(installed.packages(lib.loc = reup:::reup_options$new_library))
+    pkg_frame[(pkg_frame$Package %in% all_installed), "try_install"] <- FALSE
   }
 
   all_installed <- rownames(installed.packages(lib.loc = reup:::reup_options$new_library))
