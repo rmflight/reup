@@ -81,6 +81,13 @@ get_lib_dir_info <- function(top_dir = NULL){
   dir_info
 }
 
+#' get the old library location
+#'
+#' Gets the old library location set by \code{set_old_library()}.
+#'
+#' @export
+#'
+#' @return character
 get_old_library <- function(){
   reup:::reup_options$old_library
 }
@@ -108,7 +115,7 @@ set_new_library <- function(lib_loc = NULL){
 
   dir_info <- get_lib_dir_info(dirname(old_library))
   if (is.null(lib_loc)) {
-    
+
     if ((difftime(Sys.time(), dir_info[1, "mod_time"], units = "hours") < 24) && (nrow(dir_info) > 1)) {
       lib_loc <- dir_info[1, "dir"]
     }
@@ -149,6 +156,14 @@ set_new_library <- function(lib_loc = NULL){
 
 }
 
+
+#' get new library location
+#'
+#' returns the new library location that was defined by \code{set_new_library()}
+#'
+#' @export
+#'
+#' @return character
 get_new_library <- function(){
   reup:::reup_options$new_library
 }
