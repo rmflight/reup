@@ -12,4 +12,3 @@ set_old_library(lib_loc = NULL)
 \description{
 Sets the old library. Default is to take it from R_LIBS
 }
-

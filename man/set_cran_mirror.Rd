@@ -12,4 +12,3 @@ set_cran_mirror(url = "https://cloud.r-project.org/")
 \description{
 Sets the CRAN mirror to use. Default is the RStudio one
 }
-

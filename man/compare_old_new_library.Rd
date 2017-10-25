@@ -13,4 +13,3 @@ matrix
 Compares the old and new package lists, and then returns the list of things
 that have yet to be installed in the new library location.
 }
-

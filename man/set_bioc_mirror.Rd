@@ -9,4 +9,3 @@ set_bioc_mirror(url = "https://bioconductor.org")
 \description{
 Sets the Bioconductor mirror to use. Default is https://bioconductor.org
 }
-

@@ -15,4 +15,3 @@ data.frame
 \description{
 get the number of dependencies for all of the packages
 }
-

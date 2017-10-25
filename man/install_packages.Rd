@@ -19,4 +19,3 @@ Try to install a list of packages in a \code{data.frame}. Installation success
 is determined by comparing to results of \code{installed.packages}, so the list
 of uninstalled may not be exactly correct if a package was installed previously.
 }
-

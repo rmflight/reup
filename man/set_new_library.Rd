@@ -13,4 +13,3 @@ set_new_library(lib_loc = NULL)
 Creates a new library location based on the version of R, and if the
 Bioconductor mirror is set, then the Bioconductor version as well.
 }
-

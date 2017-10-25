@@ -15,4 +15,3 @@ matrix
 \description{
 get the list of packages installed in the new library
 }
-

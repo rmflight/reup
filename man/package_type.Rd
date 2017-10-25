@@ -17,4 +17,3 @@ Determine what type of package it is and where it needs to be installed from.
 The types expected include: Cran, Bioconductor, local, and versioned repo (i.e.
 github, bitbucket, gitlab).
 }
-
